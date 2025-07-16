@@ -15,7 +15,7 @@ This guide walks you through deploying NLWeb to Railway, a modern cloud platform
 Ensure your repository has:
 - ✅ `Dockerfile` (already exists)
 - ✅ `railway.json` (just created)
-- ✅ Your state data loaded (using the multi-state loading scripts)
+- ✅ Your Qdrant database already populated with state data
 
 ### 2. Create a New Railway Project
 
@@ -44,21 +44,14 @@ In the Railway dashboard for your project:
 
 **Required for Basic Functionality:**
 ```
-# Choose your LLM provider (at least one required)
+# LLM Provider (choose one)
 OPENAI_API_KEY=your-openai-key
 # OR
 ANTHROPIC_API_KEY=your-anthropic-key
-# OR
-AZURE_OPENAI_ENDPOINT=https://your-endpoint.openai.azure.com/
-AZURE_OPENAI_API_KEY=your-azure-key
 
-# Choose your vector store (at least one required)
-# For development/testing, you can use Milvus Lite:
-MILVUS_ENDPOINT=/app/data/milvus.db
-
-# OR for production Qdrant:
+# Qdrant Vector Database
 QDRANT_URL=your-qdrant-url
-QDRANT_API_KEY=your-qdrant-key
+QDRANT_API_KEY=your-qdrant-api-key
 
 # Logging configuration
 NLWEB_LOGGING_PROFILE=production
@@ -73,17 +66,7 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 # Other OAuth providers as needed...
 ```
 
-### 4. Configure Persistent Storage (Important!)
-
-Since you're using state data files, you need persistent storage:
-
-1. In Railway dashboard, go to your service
-2. Click "Settings" → "Mounts"
-3. Add a new mount:
-   - Mount Path: `/app/data`
-   - This will persist your vector database and loaded state data
-
-### 5. Deploy
+### 4. Deploy
 
 If using GitHub integration:
 - Simply push to your connected branch
@@ -104,11 +87,11 @@ Once deployed:
 ## Important Considerations
 
 ### Memory and Performance
-- The free Railway tier provides 512MB RAM and 1GB disk
-- For production with all states loaded, you'll need at least:
-  - 8GB RAM (Hobby plan or higher)
-  - 10GB persistent storage
-  - Consider using Railway's autoscaling features
+- Since you're using Qdrant (external vector database), Railway resource requirements are minimal
+- The free Railway tier (512MB RAM) should be sufficient for the web service
+- For better performance, consider:
+  - Hobby plan ($5/month) for more resources
+  - Using Railway's autoscaling features for high traffic
 
 ### Database Connection
 - If using an external vector database (recommended for production):
@@ -132,13 +115,14 @@ Once deployed:
 
 ### Common Issues
 
-1. **Out of Memory Errors**
-   - Solution: Upgrade to a higher tier or load fewer states
-   - Alternative: Use external vector database instead of file-based
+1. **Connection to Qdrant Failed**
+   - Ensure QDRANT_URL is accessible from Railway
+   - Check if QDRANT_API_KEY is correct
+   - Verify Qdrant allows connections from Railway's IP range
 
-2. **Slow Startup**
-   - This is normal if loading many states
-   - Consider implementing a health check endpoint that returns early
+2. **Slow Response Times**
+   - Check Qdrant query performance
+   - Consider upgrading Railway tier for more CPU
 
 3. **Connection Timeouts**
    - Increase health check timeout in `railway.json`
@@ -170,9 +154,9 @@ Once deployed:
 ## Cost Estimation
 
 Based on Railway's pricing (as of 2024):
-- **Hobby Plan** ($5/month): Good for testing with a few states
-- **Pro Plan** ($20/month): Suitable for production with all states
-- Additional costs for:
-  - Persistent storage
-  - Bandwidth
-  - External database services
+- **Free Tier**: Should work fine for testing/development
+- **Hobby Plan** ($5/month): Recommended for production with better performance
+- **Pro Plan** ($20/month): For high traffic or multiple replicas
+- Additional costs:
+  - Bandwidth (if high traffic)
+  - Your external Qdrant service

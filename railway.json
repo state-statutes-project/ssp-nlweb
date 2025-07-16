@@ -14,7 +14,6 @@
   "variables": {
     "PORT": "${{PORT}}",
     "PYTHONPATH": "/app",
-    "NLWEB_CONFIG_DIR": "/app/config",
-    "NLWEB_OUTPUT_DIR": "/app/data"
+    "NLWEB_CONFIG_DIR": "/app/config"
   }
 }
