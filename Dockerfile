@@ -51,5 +51,8 @@ ENV NLWEB_OUTPUT_DIR=/app
 ENV PYTHONPATH=/app
 ENV PORT=8000
 
+# Print the contents of the app directory
+RUN ls -la /app
+
 # Command to run the application
 CMD ["python", "python/app-file.py"]
