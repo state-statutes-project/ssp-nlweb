@@ -121,6 +121,9 @@ class ModernChatInterface {
     // New chat button
     this.elements.newChatBtn.addEventListener('click', () => this.createNewChat());
     
+    // Bind example query click handlers
+    this.bindExampleQueries();
+    
     
     // Send button
     this.elements.sendButton.addEventListener('click', () => this.sendMessage());
@@ -182,16 +185,48 @@ class ModernChatInterface {
     });
   }
   
+  bindExampleQueries() {
+    // Bind click handlers for example query buttons
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('example-query')) {
+        const query = e.target.getAttribute('data-query');
+        if (query) {
+          // Set the query in the main input
+          this.elements.chatInput.value = query;
+          this.elements.chatInput.style.height = 'auto';
+          this.elements.chatInput.style.height = Math.min(this.elements.chatInput.scrollHeight, 200) + 'px';
+          this.elements.chatInput.focus();
+          
+          // Hide welcome section
+          const welcomeSection = document.getElementById('welcome-section');
+          if (welcomeSection) {
+            welcomeSection.style.display = 'none';
+          }
+        }
+      }
+    });
+  }
+  
   createNewChat(existingInputElementId = null, site = null) {
     // Create new conversation
     // Create new conversation ID but don't add to conversations array yet
     this.currentConversationId = Date.now().toString();
     
-    // Clear UI
+    // Clear UI - but preserve welcome section
+    const welcomeSection = document.getElementById('welcome-section');
+    const welcomeHTML = welcomeSection ? welcomeSection.outerHTML : '';
+    
     this.elements.messagesContainer.innerHTML = '';
     this.elements.chatTitle.textContent = 'New chat';
     this.elements.chatInput.value = '';
     this.elements.chatInput.style.height = 'auto';
+    
+    // Restore welcome section
+    if (welcomeHTML) {
+      this.elements.messagesContainer.innerHTML = welcomeHTML;
+      // Re-bind example queries since we recreated the DOM
+      this.bindExampleQueries();
+    }
     
     // Clear context arrays for new chat
     this.prevQueries = [];
@@ -291,13 +326,7 @@ class ModernChatInterface {
     
     // Load messages
     conversation.messages.forEach((msg, index) => {
-      // Set pendingDebugIcon for user messages so the next assistant message gets the icon
-      if (msg.type === 'user' && index < conversation.messages.length - 1) {
-        const nextMsg = conversation.messages[index + 1];
-        if (nextMsg && nextMsg.type === 'assistant') {
-          this.pendingDebugIcon = true;
-        }
-      }
+      // Removed debug icon logic
       this.addMessageToUI(msg.content, msg.type, false);
     });
     
@@ -318,6 +347,18 @@ class ModernChatInterface {
   sendMessage(messageText = null) {
     const message = messageText || this.elements.chatInput.value.trim();
     if (!message || this.isStreaming) return;
+    
+    // Hide welcome section when sending first message
+    const welcomeSection = document.getElementById('welcome-section');
+    if (welcomeSection) {
+      welcomeSection.style.display = 'none';
+    }
+    
+    // Hide chat info section when sending a message
+    const chatInfoSection = document.getElementById('chat-info-section');
+    if (chatInfoSection) {
+      chatInfoSection.style.display = 'none';
+    }
     
     // Add user message
     this.addMessage(message, 'user');
@@ -362,10 +403,7 @@ class ModernChatInterface {
     this.saveConversations();
     this.updateConversationsList();
     
-    // When user sends a message, we'll add debug icon to the next assistant message
-    if (type === 'user') {
-      this.pendingDebugIcon = true;
-    }
+    // Removed debug icon functionality
   }
   
   addMessageToUI(content, type, animate = true) {
@@ -380,21 +418,7 @@ class ModernChatInterface {
     const messageLayout = document.createElement('div');
     messageLayout.className = 'message-layout';
     
-    // Only create header row if there's a debug icon to show
-    if (type === 'assistant' && this.pendingDebugIcon) {
-      const headerRow = document.createElement('div');
-      headerRow.className = 'message-layout-header';
-      
-      const debugIcon = document.createElement('span');
-      debugIcon.className = 'message-debug-icon';
-      debugIcon.textContent = '{}';
-      debugIcon.title = 'Show debug info';
-      debugIcon.addEventListener('click', () => this.toggleDebugInfo());
-      headerRow.appendChild(debugIcon);
-      this.pendingDebugIcon = false;
-      
-      messageLayout.appendChild(headerRow);
-    }
+    // Removed debug icon header
     
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
@@ -586,8 +610,9 @@ class ModernChatInterface {
           messageContent += data.message + '\n';
           textDiv.innerHTML = messageContent + this.renderItems(allResults);
         } else if (data.message_type === 'asking_sites' && data.message) {
-          messageContent += `Searching: ${data.message}\n\n`;
-          textDiv.innerHTML = messageContent + this.renderItems(allResults);
+          // Skip showing "Searching:" messages
+          // messageContent += `Searching: ${data.message}\n\n`;
+          // textDiv.innerHTML = messageContent + this.renderItems(allResults);
         } else if (data.message_type === 'decontextualized_query') {
           // Display the decontextualized query if different from original
           if (data.decontextualized_query && data.original_query && 
@@ -830,7 +855,6 @@ class ModernChatInterface {
     sortedItems.forEach(item => {
       // Use JsonRenderer to create the item HTML
       const itemElement = this.jsonRenderer.createJsonItemHtml(item);
-      
       // No inline styles - let CSS handle all styling
       
       resultsContainer.appendChild(itemElement);
@@ -1817,7 +1841,7 @@ class ModernChatInterface {
             <textarea 
               class="centered-chat-input" 
               id="centered-chat-input"
-              placeholder="Ask"
+              placeholder="Ask a question about state statutes..."
               rows="2"
             ></textarea>
             <button class="centered-send-button" id="centered-send-button">

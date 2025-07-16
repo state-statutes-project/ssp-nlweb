@@ -139,6 +139,91 @@ export class PodcastEpisodeRenderer extends TypeRenderer {
 }
 
 /**
+ * Renderer for statutes
+ */
+export class StatuteRenderer extends TypeRenderer {
+  /**
+   * Types that this renderer can handle
+   * 
+   * @returns {Array<string>} - The types this renderer can handle
+   */
+  static get supportedTypes() {
+    return ["Statute"];
+  }
+  
+  /**
+   * Renders a statute item
+   * 
+   * @param {Object} item - The statute item to render
+   * @returns {HTMLElement} - The rendered HTML
+   */
+  render(item) {
+    // Use the default renderer but with a custom title
+    const container = this.jsonRenderer.createDefaultItemHtml(item);
+    
+    // Find the title link and its parent
+    const titleLink = container.querySelector('.item-title-link');
+    const titleRow = container.querySelector('.item-title-row');
+    
+    if (titleLink && titleRow) {
+      // Set the main title (just the statute name)
+      titleLink.textContent = item.name || 'Untitled Statute';
+      
+      // Create a subtle metadata line below the title
+      const metadataDiv = document.createElement('div');
+      metadataDiv.style.cssText = `
+        font-size: 0.85em;
+        color: #666;
+        margin-top: 4px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      `;
+      
+      // Add state with a location icon feel
+      if (item.schema_object.state) {
+        const stateSpan = document.createElement('span');
+        stateSpan.textContent = item.schema_object.state;
+        stateSpan.style.cssText = 'font-weight: 500;';
+        metadataDiv.appendChild(stateSpan);
+      }
+      
+      // Add year with a bullet separator
+      if (item.schema_object.year) {
+        if (item.schema_object.state) {
+          const separator = document.createElement('span');
+          separator.textContent = '•';
+          separator.style.cssText = 'color: #ccc;';
+          metadataDiv.appendChild(separator);
+        }
+        const yearSpan = document.createElement('span');
+        yearSpan.textContent = item.schema_object.year;
+        metadataDiv.appendChild(yearSpan);
+      }
+      
+      // Add citation in a muted style
+      if (item.schema_object.citation) {
+        if (item.schema_object.state || item.schema_object.year) {
+          const separator = document.createElement('span');
+          separator.textContent = '•';
+          separator.style.cssText = 'color: #ccc;';
+          metadataDiv.appendChild(separator);
+        }
+        const citationSpan = document.createElement('span');
+        citationSpan.textContent = item.schema_object.citation;
+        citationSpan.style.cssText = 'font-style: italic;';
+        metadataDiv.appendChild(citationSpan);
+      }
+      
+      // Insert metadata after the title row
+      titleRow.parentNode.insertBefore(metadataDiv, titleRow.nextSibling);
+    }
+    
+    return container;
+  }
+}
+
+/**
  * Factory for creating type renderers
  */
 export class TypeRendererFactory {
@@ -150,6 +235,7 @@ export class TypeRendererFactory {
   static registerAll(jsonRenderer) {
     TypeRendererFactory.registerRenderer(RealEstateRenderer, jsonRenderer);
     TypeRendererFactory.registerRenderer(PodcastEpisodeRenderer, jsonRenderer);
+    TypeRendererFactory.registerRenderer(StatuteRenderer, jsonRenderer);
     // RecipeRenderer will be registered separately
     // Add more renderers here as needed
   }

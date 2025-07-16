@@ -1,0 +1,80 @@
+/* Chat info styles */
+.chat-info-section {
+  padding: 1.5rem 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.chat-info {
+  max-width: 700px;
+  width: 100%;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.chat-info p {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.chat-info a {
+  color: var(--primary-color, #0066cc);
+  text-decoration: none;
+}
+
+.chat-info a:hover {
+  text-decoration: underline;
+}
+
+.chat-info ul {
+  margin: 0.75rem 0 0 0;
+  padding-left: 1.5rem;
+  list-style: none;
+}
+
+.chat-info ul li {
+  position: relative;
+  padding-left: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.chat-info ul li:last-child {
+  margin-bottom: 0;
+}
+
+.chat-info ul li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--text-primary);
+  font-weight: bold;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chat-info-section {
+    padding: 1rem 16px;
+  }
+  
+  .chat-info {
+    padding: 1.25rem;
+  }
+  
+  .chat-info p {
+    font-size: 0.9rem;
+  }
+  
+  .chat-info ul li {
+    font-size: 0.9rem;
+  }
+}

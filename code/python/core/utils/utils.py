@@ -51,7 +51,7 @@ def visibleUrl(url):
 def get_param(query_params, param_name, param_type=str, default_value=None):
     value = query_params.get(param_name, default_value)
     if (value is not None):
-        if param_type == str:\
+        if param_type == str:
             if isinstance(value, list):
                 return value[0] if value else ""
             return value    

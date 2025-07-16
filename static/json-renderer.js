@@ -62,14 +62,33 @@ export class JsonRenderer {
     if (item.schema_object && Array.isArray(item.schema_object) && item.schema_object.length > 0) {
       item.schema_object = item.schema_object[0];
     }
+    
+    // Check for @type in schema_object first, then directly on item
+    let type = null;
+    let dataToRender = null;
+    
     if (item.schema_object && item.schema_object['@type']) {
-      const type = item.schema_object['@type'];
-      if (Object.prototype.hasOwnProperty.call(this.typeRenderers, type) && 
-             typeof this.typeRenderers[type] === 'function') {
-        return this.typeRenderers[type](item, this);
-      } 
+      type = item.schema_object['@type'];
+      dataToRender = item;
+    } else if (item['@type']) {
+      type = item['@type'];
+      dataToRender = item;
     }
     
+    console.log('Item type detection:', {
+      type: type,
+      hasRenderer: type ? this.typeRenderers.hasOwnProperty(type) : false,
+      availableRenderers: Object.keys(this.typeRenderers),
+      item: item
+    });
+    
+    if (type && Object.prototype.hasOwnProperty.call(this.typeRenderers, type) && 
+           typeof this.typeRenderers[type] === 'function') {
+      console.log(`Using ${type} renderer`);
+      return this.typeRenderers[type](dataToRender, this);
+    }
+    
+    console.log('Using default renderer');
     return this.createDefaultItemHtml(item);
   }
   

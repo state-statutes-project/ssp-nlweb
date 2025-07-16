@@ -2,7 +2,7 @@
 # This file configures where and how conversation history is stored
 
 # Default storage endpoint to use
-default_storage: qdrant_local
+default_storage: qdrant_remote
 
 # Storage endpoints configuration
 storage_endpoints:

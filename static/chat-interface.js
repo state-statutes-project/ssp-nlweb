@@ -362,8 +362,6 @@ export class ChatInterface {
     titleLink.className = 'item-title-link';
     titleRow.appendChild(titleLink);
 
-   
-
     contentDiv.appendChild(titleRow);
   }
   

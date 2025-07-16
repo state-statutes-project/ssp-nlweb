@@ -1,0 +1,101 @@
+/* Welcome section styles for the landing page */
+
+.welcome-section {
+  max-width: 800px;
+  margin: 0;
+  padding: 3rem 2rem;
+  animation: fadeIn 0.5s ease-in;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 100%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Single welcome tile */
+.welcome-tile {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: left;
+}
+
+.welcome-tile p {
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.examples-intro {
+  font-weight: 500;
+  margin-bottom: 1rem !important;
+}
+
+/* Example list */
+.example-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.example-query {
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  text-align: left;
+}
+
+.example-query:hover {
+  background: var(--bg-hover);
+  border-color: var(--primary-color);
+  transform: translateX(2px);
+}
+
+.example-query:active {
+  transform: translateX(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .welcome-tile {
+    padding: 1.5rem;
+  }
+  
+  .welcome-tile p {
+    font-size: 1rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .welcome-tile {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .example-query {
+    background: rgba(255, 255, 255, 0.03);
+  }
+  
+  .example-query:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+

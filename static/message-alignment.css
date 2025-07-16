@@ -1,0 +1,39 @@
+/* Message alignment styles to override centering */
+
+/* Ensure messages container doesn't center content */
+.messages-container {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 2rem;
+}
+
+/* Message layout should be full width */
+.message-layout {
+  max-width: none;
+  margin: 0;
+  width: 100%;
+}
+
+/* Ensure messages aren't centered */
+.message {
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Keep message content full width */
+.message-content {
+  max-width: none;
+}
+
+/* Responsive padding */
+@media (max-width: 768px) {
+  .messages-container {
+    padding: 0 1rem;
+  }
+  
+  .welcome-section {
+    padding: 2rem 1rem;
+  }
+}

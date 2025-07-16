@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="/static/favicon.png">
   <link rel="stylesheet" href="/static/common-chat-styles.css">
   <link rel="stylesheet" href="/static/chat-page-styles.css">
+  <link rel="stylesheet" href="/static/chat-description.css">
 </head>
 <body>
   <div class="app-container">
@@ -61,6 +62,24 @@
           </div>
         </div>
       </header>
+
+      <div class="chat-info-section" id="chat-info-section">
+        <div class="chat-info">
+          <p>
+          This is a tool for searching through our data with natural language questions. It is powered by <a href="https://github.com/microsoft/NLWeb">NLWeb</a>.<br><br>
+
+          This tool is not intended to be a substitute for fully fledged LLM pipelines (i.e., if you wanted to identify every private right across our data), and caps the number of results returned. Instead, it is useful as an interactive way to explore our data.
+
+          Examples of queries you can ask are: 
+          <ul>
+            <li>"Arkansas data protection statutes"</li>
+            <li>"definitions of what counts as medical practice"</li>
+            <li>"local preemption statutes about housing"</li>
+            <li>"forum non conveniens statutes"</li>
+          </ul>
+        </p>
+        </div>
+      </div>
 
       <div class="chat-messages" id="chat-messages">
         <div class="messages-container" id="messages-container">
